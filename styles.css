@@ -1,77 +1,232 @@
 
-/* Более крупное и выразительное оформление */
-
-.container {
-  width: min(92%, 1050px);
+/* ЦВЕТОВАЯ ПАЛИТРА */
+:root {
+  --green: #829B7F;
+  --green-dark: #294C38;
+  --yellow: #FFF0B8;
+  --yellow-light: #FFF6D5;
+  --cream: #F8F3E7;
+  --text: #294533;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(
+    145deg,
+    #91A88A 0%,
+    #829B7F 55%,
+    #718C72 100%
+  );
+  font-family: Arial, sans-serif;
+  color: var(--text);
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
+.container {
+  width: min(92%, 1050px);
+  margin: 0 auto;
+}
+
+/* ЗАГОЛОВОК */
 .header {
-  padding: 65px 15px 38px;
+  text-align: center;
+  padding: 55px 15px 32px;
 }
 
 .eyebrow {
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: bold;
   letter-spacing: 3px;
+  color: #FFF0B8;
 }
 
 h1 {
+  font-family: Georgia, serif;
   font-size: clamp(48px, 6vw, 76px);
+  font-weight: normal;
+  color: #FFF9E8;
+  margin: 15px 0;
 }
 
 .subtitle {
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1.6;
   max-width: 650px;
+  margin: 0 auto;
+  color: #FFF9E8;
 }
 
+/* КАРТОЧКА С 3D-МОДЕЛЬЮ */
 .viewer-card {
-  margin-bottom: 32px;
+  width: 100%;
+  overflow: hidden;
+  background: var(--yellow);
   border-radius: 25px;
-  box-shadow: 0 22px 55px #243e2b30;
+  border: 1px solid #E8D79E;
+  box-shadow: 0 22px 55px #243E2B30;
+  margin-bottom: 32px;
 }
 
 model-viewer {
-  height: 620px;
+  display: block;
+  width: 100%;
+  height: 580px;
+
+  background: radial-gradient(
+    ellipse at center,
+    #FFF9E4 0%,
+    #FFF0B8 75%,
+    #F5E2A4 100%
+  );
+
+  --poster-color: #FFF0B8;
 }
 
+/* ПОДСКАЗКА ПОД МОДЕЛЬЮ */
 .viewer-caption {
-  font-size: 15px;
-  padding: 20px;
-}
-
-.info-card {
-  padding: 48px 35px;
-  border-radius: 25px;
-}
-
-.info-card h2 {
-  font-size: clamp(32px, 4vw, 46px);
-}
-
-.info-card p:last-child {
-  font-size: 17px;
-  line-height: 1.8;
-}
-
-footer {
+  background: #F7E6AF;
+  padding: 19px 15px;
+  text-align: center;
   font-size: 14px;
-  padding: 35px 15px 50px;
+  line-height: 1.6;
+  color: #556747;
 }
 
+.sparkle {
+  color: #B78E42;
+  margin: 0 10px;
+}
+
+/* УБИРАЕМ КНОПКИ УПРАВЛЕНИЯ */
 .controls {
   display: none !important;
 }
 
+/* ИНФОРМАЦИОННАЯ КАРТОЧКА */
+.info-card {
+  background: var(--cream);
+  border-radius: 25px;
+  padding: 45px 35px;
+  text-align: center;
+  box-shadow: 0 12px 35px #243E2B25;
+}
+
+.section-label {
+  color: #A2874E;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.info-card h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: normal;
+  color: var(--green-dark);
+  margin: 16px 0;
+}
+
+.info-card p:last-child {
+  max-width: 650px;
+  margin: 0 auto;
+  color: #60705D;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* ПОДВАЛ */
+footer {
+  text-align: center;
+  color: #FFF9E8;
+  font-size: 13px;
+  padding: 35px 15px 50px;
+}
+
+/* КНОПКА ДОПОЛНЕННОЙ РЕАЛЬНОСТИ */
+#ar-button {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  background: var(--green-dark);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ПОЛОСА ЗАГРУЗКИ */
+.progress-bar {
+  display: block;
+  width: 45%;
+  height: 6px;
+  position: absolute;
+  left: 27.5%;
+  bottom: 45%;
+  background: #E9DDAF;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar.hide {
+  visibility: hidden;
+}
+
+.update-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--green-dark);
+  transition: width 0.2s;
+}
+
+#ar-prompt {
+  display: none;
+}
+
+/* МОБИЛЬНАЯ ВЕРСИЯ */
 @media (max-width: 600px) {
+  .container {
+    width: min(94%, 1050px);
+  }
+
   .header {
-    padding: 40px 10px 28px;
+    padding: 38px 10px 28px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  h1 {
+    font-size: 46px;
+  }
+
+  .subtitle {
+    font-size: 14px;
   }
 
   model-viewer {
-    height: 430px;
+    height: 420px;
   }
 
   .viewer-caption {
     font-size: 12px;
+    padding: 15px 10px;
+  }
+
+  .sparkle {
+    margin: 0 4px;
   }
 
   .info-card {
@@ -79,6 +234,10 @@ footer {
   }
 
   .info-card p:last-child {
-    font-size: 15px;
+    font-size: 14px;
+  }
+
+  footer {
+    font-size: 11px;
   }
 }
