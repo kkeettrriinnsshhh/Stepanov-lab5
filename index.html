@@ -1,27 +1,116 @@
+
 <!doctype html>
-<html lang="en">
-  <head>
-    <title>&lt;model-viewer&gt; template</title>
-    <meta charset="utf-8">
-    <meta name="description" content="&lt;model-viewer&gt; template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" href="./styles.css" rel="stylesheet"/>
-  </head>
-  <body>
-    <!-- <model-viewer> HTML element -->
-    <model-viewer src="4aa07e83b6784fd0ad8b52cbe9aa9017.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1.21" autoplay camera-orbit="-41.43deg 73.34deg 20.34m" field-of-view="30deg" exposure="0.76" shadow-softness="0.41" auto-rotate>
-      <div class="progress-bar hide" slot="progress-bar">
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Флаги мира — 3D-презентация</title>
+  <meta name="description" content="Интерактивная 3D-коллекция флагов мира">
+
+  <link rel="stylesheet" href="./styles.css">
+
+  <script type="module"
+    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js">
+  </script>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <header class="header">
+      <p class="eyebrow">ИНТЕРАКТИВНАЯ 3D-ПРЕЗЕНТАЦИЯ</p>
+
+      <h1>Флаги мира</h1>
+
+      <p class="subtitle">
+        Путешествие по странам и культурам
+        в трёхмерном пространстве
+      </p>
+    </header>
+
+    <section class="viewer-card">
+
+      <model-viewer
+        id="flags-model"
+        src="4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls
+        auto-rotate
+        rotation-per-second="15deg"
+        tone-mapping="neutral"
+        poster="poster.webp"
+        shadow-intensity="1.21"
+        shadow-softness="0.41"
+        exposure="0.76"
+        camera-orbit="-41.43deg 73.34deg 20.34m"
+        field-of-view="30deg"
+        min-camera-orbit="auto auto 5m"
+        max-camera-orbit="auto auto 60m"
+        alt="Трёхмерная композиция флагов разных стран">
+
+        <div class="progress-bar hide" slot="progress-bar">
           <div class="update-bar"></div>
+        </div>
+
+        <button slot="ar-button" id="ar-button">
+          Посмотреть в AR
+        </button>
+
+        <div id="ar-prompt">
+          <img src="ar_hand_prompt.png" alt="Подсказка AR">
+        </div>
+
+      </model-viewer>
+
+      <div class="viewer-caption">
+        <span class="sparkle">✦</span>
+        Вращайте модель мышью и приближайте колёсиком
+        <span class="sparkle">✦</span>
       </div>
-      <button slot="ar-button" id="ar-button">
-          View in your space
+
+    </section>
+
+    <section class="controls">
+      <button id="rotate-btn" type="button">
+        ↻ Автовращение: вкл.
       </button>
-      <div id="ar-prompt">
-          <img src="ar_hand_prompt.png">
-      </div>
-    </model-viewer>  
-    <script src="script.js"></script>
-    <!-- Loads <model-viewer> for browsers: -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js"></script>
-  </body>
+
+      <button id="zoom-in" type="button">
+        + Приблизить
+      </button>
+
+      <button id="zoom-out" type="button">
+        − Отдалить
+      </button>
+
+      <button id="reset-camera" type="button">
+        ⟲ Исходный вид
+      </button>
+    </section>
+
+    <section class="info-card">
+      <p class="section-label">ИССЛЕДУЙТЕ МИР</p>
+
+      <h2>Мир в каждом флаге</h2>
+
+      <p>
+        Каждый флаг — это символ истории,
+        культуры и национальной идентичности.
+        Рассмотрите трёхмерную композицию
+        с разных ракурсов и познакомьтесь
+        с визуальным многообразием мира.
+      </p>
+    </section>
+
+    <footer>
+      Лабораторная работа · Интерактивная 3D-визуализация
+    </footer>
+
+  </main>
+
+  <script src="./script.js"></script>
+</body>
 </html>
