@@ -1,10 +1,12 @@
 
 :root {
-  --bg: #081527;
-  --panel: #10243b;
-  --gold: #e5bd73;
-  --text: #f7f4ed;
-  --muted: #a9b9c9;
+  --green: #718C72;
+  --green-dark: #294C38;
+  --green-deep: #203F30;
+  --yellow: #FFF1BD;
+  --yellow-light: #FFF8DC;
+  --cream: #F9F4E8;
+  --text: #294533;
 }
 
 * {
@@ -14,98 +16,212 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(
-    ellipse at top,
-    #203b59 0%,
-    #081527 75%
+  background: linear-gradient(
+    145deg,
+    #91A88A,
+    #718C72 65%,
+    #5D7A65
   );
-  color: var(--text);
   font-family: Arial, sans-serif;
-  text-align: center;
+  color: var(--text);
 }
 
-header {
-  padding: 55px 20px 25px;
+.container {
+  width: min(100% - 36px, 1050px);
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  padding: 55px 15px 28px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 4px;
+  font-weight: bold;
+  color: #F9E7B0;
 }
 
 h1 {
   font-family: Georgia, serif;
-  font-size: clamp(32px, 5vw, 58px);
   font-weight: normal;
-  margin: 12px 0;
+  font-size: clamp(42px, 6vw, 72px);
+  margin: 14px 0;
+  color: #FFF9E8;
 }
 
-h2 {
-  color: var(--gold);
-}
-
-p {
-  color: var(--muted);
+.subtitle {
+  font-size: 16px;
   line-height: 1.6;
+  color: #F2F5E9;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.viewer-card {
+  overflow: hidden;
+  background: var(--yellow);
+  border: 1px solid #E5D49A;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px #243E2B35;
 }
 
 model-viewer {
   display: block;
   width: 100%;
-  height: min(65vh, 600px);
-  min-height: 350px;
+  height: 540px;
   background: radial-gradient(
     ellipse at center,
-    #f9f9f6 0%,
-    #dce5ed 100%
+    #FFF9E2 0%,
+    #FFF1BD 70%,
+    #F5E4A5 100%
   );
-  border-radius: 20px;
+  --poster-color: #FFF1BD;
 }
 
-.viewer-card {
-  width: min(92%, 1100px);
-  margin: 25px auto;
-  padding: 12px;
-  background: var(--panel);
-  border: 1px solid #52647a;
-  border-radius: 26px;
-  box-shadow: 0 25px 65px #0006;
+.viewer-caption {
+  background: #F7E6AF;
+  padding: 19px 15px;
+  text-align: center;
+  font-size: 13px;
+  color: #556747;
+  line-height: 1.7;
 }
 
-button {
-  background: var(--gold);
-  color: #15243a;
+.sparkle {
+  color: #B78E42;
+  margin: 0 12px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px auto 38px;
+}
+
+.controls button {
   border: none;
   border-radius: 30px;
-  padding: 13px 25px;
-  margin: 7px;
-  font-weight: bold;
+  background: var(--green-dark);
+  color: #FFF9E8;
+  padding: 14px 22px;
+  font-size: 13px;
   cursor: pointer;
   transition: 0.25s;
 }
 
-button:hover {
-  background: #f5d69b;
+.controls button:hover {
+  background: var(--green-deep);
   transform: translateY(-3px);
 }
 
-.controls {
-  margin: 25px auto;
-  padding: 10px;
+.info-card {
+  background: var(--cream);
+  border-radius: 24px;
+  padding: 38px 30px;
+  text-align: center;
+  box-shadow: 0 12px 35px #243E2B25;
+}
+
+.section-label {
+  color: #A2874E;
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: bold;
+}
+
+.info-card h2 {
+  font-family: Georgia, serif;
+  font-weight: normal;
+  font-size: clamp(27px, 4vw, 39px);
+  margin: 15px 0;
+}
+
+.info-card p:last-child {
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.8;
+  font-size: 15px;
+  color: #60705D;
 }
 
 footer {
-  padding: 35px 15px;
-  color: var(--muted);
+  text-align: center;
+  color: #F1EEDC;
+  padding: 36px 15px;
+  font-size: 12px;
+}
+
+#ar-button {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  background: var(--green-dark);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  cursor: pointer;
   font-size: 13px;
 }
 
+.progress-bar {
+  display: block;
+  width: 45%;
+  height: 6px;
+  position: absolute;
+  left: 27.5%;
+  bottom: 45%;
+  background: #E9DDAF;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar.hide {
+  visibility: hidden;
+}
+
+.update-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--green-dark);
+  transition: width 0.2s;
+}
+
+#ar-prompt {
+  display: none;
+}
+
 @media (max-width: 600px) {
-  header {
+  .header {
     padding-top: 35px;
   }
 
   model-viewer {
-    height: 55vh;
-    min-height: 300px;
+    height: 420px;
   }
 
-  button {
-    padding: 12px 17px;
+  .viewer-caption {
+    font-size: 12px;
+  }
+
+  .sparkle {
+    margin: 0 4px;
+  }
+
+  .controls {
+    gap: 9px;
+  }
+
+  .controls button {
+    padding: 12px 15px;
+    font-size: 12px;
+  }
+
+  .info-card {
+    padding: 30px 20px;
   }
 }
