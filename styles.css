@@ -225,3 +225,8 @@ footer {
     padding: 30px 20px;
   }
 }
+
+.controls {
+  display: none !important;
+}
+
