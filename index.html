@@ -22,9 +22,7 @@
 
 <main class="container">
 
-  <!-- ЗАГОЛОВОК -->
   <header class="header">
-
     <p class="eyebrow">
       ИНТЕРАКТИВНАЯ 3D-ПРЕЗЕНТАЦИЯ
     </p>
@@ -35,21 +33,16 @@
       Путешествие по странам и культурам
       в трёхмерном пространстве
     </p>
-
   </header>
 
-  <!-- 3D-МОДЕЛЬ -->
   <section class="viewer-card">
 
     <model-viewer
       id="flags-model"
-
       src="./4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
-
       alt="Анимированная трёхмерная композиция флагов мира"
 
       camera-controls
-
       autoplay
       animation-name="Take 001"
 
@@ -57,27 +50,22 @@
       ar-modes="webxr scene-viewer quick-look"
 
       tone-mapping="neutral"
-
       poster="./poster.webp"
 
       shadow-intensity="1.21"
       shadow-softness="0.41"
-
       exposure="0.76"
 
       camera-orbit="-41.43deg 73.34deg 15m"
-
       field-of-view="30deg"
 
       min-camera-orbit="auto auto 5m"
       max-camera-orbit="auto auto 60m">
 
-      <!-- ИНДИКАТОР ЗАГРУЗКИ -->
       <div class="progress-bar hide" slot="progress-bar">
         <div class="update-bar"></div>
       </div>
 
-      <!-- КНОПКА AR -->
       <button slot="ar-button" id="ar-button">
         Посмотреть в AR
       </button>
@@ -90,18 +78,26 @@
 
     </model-viewer>
 
-    <!-- ПОДСКАЗКА -->
     <div class="viewer-caption">
       <span class="sparkle">✦</span>
       Вращайте модель мышью и приближайте колёсиком
       <span class="sparkle">✦</span>
     </div>
 
+    <!-- УПРАВЛЕНИЕ АНИМАЦИЕЙ -->
+    <div class="animation-controls">
+      <button id="play-animation" type="button">
+        ▶ Запустить анимацию
+      </button>
+
+      <button id="pause-animation" type="button">
+        ⏸ Остановить анимацию
+      </button>
+    </div>
+
   </section>
 
-  <!-- ИНФОРМАЦИОННЫЙ БЛОК -->
   <section class="info-card">
-
     <p class="section-label">
       ИССЛЕДУЙТЕ МИР
     </p>
@@ -109,23 +105,51 @@
     <h2>Мир в каждом флаге</h2>
 
     <p>
-      Каждый флаг — это символ истории,
-      культуры и национальной идентичности.
-
-      Рассмотрите трёхмерную композицию
+      Каждый флаг — это символ истории, культуры
+      и национальной идентичности.
+      Рассмотрите анимированную трёхмерную композицию
       с разных ракурсов и познакомьтесь
       с визуальным многообразием мира.
     </p>
-
   </section>
 
-  <!-- ПОДВАЛ -->
   <footer>
     Лабораторная работа № 6 ·
     Анимация и визуальные эффекты в 3D
   </footer>
 
 </main>
+
+<script>
+  const viewer = document.querySelector("#flags-model");
+  const playButton = document.querySelector("#play-animation");
+  const pauseButton = document.querySelector("#pause-animation");
+
+  playButton.addEventListener("click", () => {
+    viewer.play();
+  });
+
+  pauseButton.addEventListener("click", () => {
+    viewer.pause();
+  });
+
+  // Индикатор загрузки модели
+  viewer.addEventListener("progress", (event) => {
+    const progressBar = viewer.querySelector(".progress-bar");
+    const updateBar = viewer.querySelector(".update-bar");
+
+    if (!progressBar || !updateBar) return;
+
+    updateBar.style.width =
+      `${event.detail.totalProgress * 100}%`;
+
+    if (event.detail.totalProgress === 1) {
+      progressBar.classList.add("hide");
+    } else {
+      progressBar.classList.remove("hide");
+    }
+  });
+</script>
 
 </body>
 </html>
