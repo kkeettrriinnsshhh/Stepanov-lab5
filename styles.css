@@ -241,3 +241,53 @@ footer {
     font-size: 11px;
   }
 }
+
+/* КНОПКИ АНИМАЦИИ */
+
+.viewer-card .animation-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  width: 100%;
+  padding: 22px 15px 28px;
+  background-color: #FFF0B8;
+}
+
+.viewer-card .animation-controls button {
+  appearance: none;
+  background-color: #294C38;
+  color: #FFF9E8;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 24px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.viewer-card .animation-controls button:hover {
+  background-color: #416A4F;
+}
+
+.viewer-card .animation-controls button:focus-visible {
+  outline: 3px solid #B78E42;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .viewer-card .animation-controls {
+    gap: 10px;
+    padding: 18px 12px 24px;
+  }
+
+  .viewer-card .animation-controls button {
+    font-size: 12px;
+    padding: 12px 16px;
+  }
+}
+
