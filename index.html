@@ -1,149 +1,709 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-  <title>Флаги мира — 3D-анимация</title>
+  <title>Флаги мира — лабораторная №6</title>
 
   <meta name="description"
-        content="Интерактивная 3D-презентация анимированных флагов мира">
+        content="Анимация и постобработка 3D-модели флагов мира">
 
-  <link rel="stylesheet" href="./styles.css">
-
-  <script
-    type="module"
-    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js">
+  <!-- Библиотеки для model-viewer и эффектов -->
+  <script async
+    src="https://ga.jspm.io/npm:es-module-shims@1.7.1/dist/es-module-shims.js">
   </script>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script type="module"
+    src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-module.min.js">
+  </script>
+
+  <script type="module"
+    src="https://cdn.jsdelivr.net/npm/@google/model-viewer-effects/dist/model-viewer-effects.min.js">
+  </script>
+
+  <style>
+    :root {
+      --brown: #54351F;
+      --accent: #B67A45;
+      --cream: #FFF4E6;
+      --paper: #FFF9F1;
+      --muted: #806C5C;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: var(--brown);
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          #FFFDF7 0%,
+          #FFF4E6 65%,
+          #F0E0CC 100%
+        );
+    }
+
+    .container {
+      width: min(94%, 1050px);
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 55px 15px 35px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+
+    h1 {
+      margin: 16px 0;
+      font-family: Georgia, serif;
+      font-size: clamp(48px, 7vw, 78px);
+      font-weight: normal;
+    }
+
+    .subtitle {
+      max-width: 650px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    /* ОБЛАСТЬ 3D-МОДЕЛИ */
+    .viewer-card {
+      overflow: hidden;
+      border: 1px solid #E5CBAE;
+      border-radius: 25px;
+      background: var(--paper);
+      box-shadow: 0 20px 55px #54351F20;
+    }
+
+    .viewer-top {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 20px 25px;
+      border-bottom: 1px solid #EADAC6;
+    }
+
+    .viewer-label {
+      color: #98714C;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .model-area {
+      position: relative;
+    }
+
+    model-viewer {
+      display: block;
+      width: 100%;
+      height: 570px;
+      background: radial-gradient(
+        circle,
+        #FFFFFF 0%,
+        #FFF9F1 60%,
+        #F4E9DB 100%
+      );
+      --poster-color: #FFF9F1;
+    }
+
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--brown);
+      font-size: 14px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .loading.hidden {
+      display: none;
+    }
+
+    .ar-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 25px;
+      background: var(--brown);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .viewer-bottom {
+      padding: 18px;
+      background: #F7EADB;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* ПАНЕЛИ УПРАВЛЕНИЯ */
+    .panel {
+      margin-top: 25px;
+      padding: 35px 25px;
+      border: 1px solid #E5CBAE;
+      border-radius: 25px;
+      background: #FFF9F1;
+      box-shadow: 0 12px 30px #54351F12;
+      text-align: center;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .panel h2 {
+      margin: 14px 0;
+      font-family: Georgia, serif;
+      font-size: clamp(28px, 4vw, 39px);
+      font-weight: normal;
+    }
+
+    .panel-description {
+      max-width: 650px;
+      margin: 0 auto 25px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button.control {
+      min-height: 46px;
+      padding: 12px 20px;
+      border: 1px solid var(--accent);
+      border-radius: 24px;
+      background: white;
+      color: var(--brown);
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button.control:hover {
+      background: #F6E6D3;
+    }
+
+    button.control.active {
+      background: var(--brown);
+      color: white;
+      border-color: var(--brown);
+    }
+
+    button.control:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .info-card {
+      margin-top: 25px;
+      padding: 45px 35px;
+      border-radius: 25px;
+      background: #F6E9D9;
+      text-align: center;
+    }
+
+    .info-card h2 {
+      margin: 15px 0;
+      font-family: Georgia, serif;
+      font-size: 38px;
+      font-weight: normal;
+    }
+
+    .info-card p:last-child {
+      max-width: 700px;
+      margin: 0 auto;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    footer {
+      padding: 35px 15px 55px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 40px 10px 28px;
+      }
+
+      h1 {
+        font-size: 48px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      model-viewer {
+        height: 420px;
+      }
+
+      .viewer-top {
+        padding: 16px;
+      }
+
+      .panel {
+        padding: 28px 15px;
+      }
+
+      button.control {
+        padding: 12px 15px;
+        font-size: 12px;
+      }
+
+      .info-card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main class="container">
 
-<main class="container">
+    <!-- ЗАГОЛОВОК -->
+    <header class="header">
+      <p class="eyebrow">
+        ИНТЕРАКТИВНАЯ 3D-ПРЕЗЕНТАЦИЯ
+      </p>
 
-  <header class="header">
-    <p class="eyebrow">
-      ИНТЕРАКТИВНАЯ 3D-ПРЕЗЕНТАЦИЯ
-    </p>
+      <h1>Флаги мира</h1>
 
-    <h1>Флаги мира</h1>
+      <p class="subtitle">
+        Путешествие по странам и культурам
+        в трёхмерном пространстве
+      </p>
+    </header>
 
-    <p class="subtitle">
-      Путешествие по странам и культурам
-      в трёхмерном пространстве
-    </p>
-  </header>
+    <!-- 3D-МОДЕЛЬ -->
+    <section class="viewer-card">
 
-  <section class="viewer-card">
-
-    <model-viewer
-      id="flags-model"
-      src="./4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
-      alt="Анимированная трёхмерная композиция флагов мира"
-
-      camera-controls
-      autoplay
-      animation-name="Take 001"
-
-      ar
-      ar-modes="webxr scene-viewer quick-look"
-
-      tone-mapping="neutral"
-      poster="./poster.webp"
-
-      shadow-intensity="1.21"
-      shadow-softness="0.41"
-      exposure="0.76"
-
-      camera-orbit="-41.43deg 73.34deg 15m"
-      field-of-view="30deg"
-
-      min-camera-orbit="auto auto 5m"
-      max-camera-orbit="auto auto 60m">
-
-      <div class="progress-bar hide" slot="progress-bar">
-        <div class="update-bar"></div>
+      <div class="viewer-top">
+        <span class="viewer-label">
+          3D-ЭКСПОНАТ / 01
+        </span>
+        <span class="viewer-label">
+          АНИМАЦИЯ И ПОСТОБРАБОТКА
+        </span>
       </div>
 
-      <button slot="ar-button" id="ar-button">
-        Посмотреть в AR
-      </button>
+      <div class="model-area">
 
-      <div id="ar-prompt">
-        <img
-          src="./ar_hand_prompt.png"
-          alt="Подсказка для просмотра в AR">
+        <model-viewer
+          id="flags-model"
+
+          src="./4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
+
+          poster="./poster.webp"
+
+          alt="Анимированная 3D-композиция флагов мира"
+
+          camera-controls
+          autoplay
+
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+
+          shadow-intensity="1.21"
+          shadow-softness="0.41"
+          exposure="0.76"
+
+          camera-orbit="-41.43deg 73.34deg 15m"
+          field-of-view="30deg"
+
+          min-camera-orbit="auto auto 5m"
+          max-camera-orbit="auto auto 60m"
+
+          animation-crossfade-duration="1000">
+
+          <!-- ЭФФЕКТЫ ПОСТОБРАБОТКИ -->
+          <effect-composer
+            id="composer"
+            render-mode="quality">
+
+            <pixelate-effect
+              id="pixel-effect"
+              granularity="8"
+              blend-mode="skip">
+            </pixelate-effect>
+
+            <glitch-effect
+              id="glitch-effect"
+              blend-mode="skip">
+            </glitch-effect>
+
+            <color-grade-effect
+              tonemapping="aces_filmic">
+            </color-grade-effect>
+
+          </effect-composer>
+
+          <button
+            class="ar-button"
+            slot="ar-button">
+            Посмотреть в AR
+          </button>
+
+        </model-viewer>
+
+        <div class="loading" id="loading">
+          Загрузка 3D-модели...
+        </div>
+
       </div>
 
-    </model-viewer>
+      <div class="viewer-bottom">
+        ✦ Вращайте модель мышью и приближайте колёсиком ✦
+      </div>
 
-    <!-- УПРАВЛЕНИЕ АНИМАЦИЕЙ -->
-    <div class="animation-controls">
-      <button id="play-animation" type="button">
-        ▶ Запустить анимацию
-      </button>
+    </section>
 
-      <button id="pause-animation" type="button">
-        ⏸ Остановить анимацию
-      </button>
-    </div>
+    <!-- АНИМАЦИЯ -->
+    <section class="panel">
 
-  </section>
+      <p class="section-label">
+        ЧАСТЬ 1 · АНИМАЦИЯ
+      </p>
 
-  <section class="info-card">
-    <p class="section-label">
-      ИССЛЕДУЙТЕ МИР
-    </p>
+      <h2>Движение флагов</h2>
 
-    <h2>Мир в каждом флаге</h2>
+      <p class="panel-description">
+        Управляйте воспроизведением анимации.
+        При наличии нескольких клипов они
+        автоматически сменяют друг друга.
+      </p>
 
-    <p>
-      Каждый флаг — это символ истории, культуры
-      и национальной идентичности.
-      Рассмотрите анимированную трёхмерную композицию
-      с разных ракурсов и познакомьтесь
-      с визуальным многообразием мира.
-    </p>
-  </section>
+      <div class="controls">
+        <button class="control" id="play-btn">
+          ▶ Запустить
+        </button>
 
-  <footer>
-    Лабораторная работа № 6 ·
-    Анимация и визуальные эффекты в 3D
-  </footer>
+        <button class="control" id="pause-btn">
+          ⏸ Остановить
+        </button>
 
-</main>
+        <button class="control" id="restart-btn">
+          ↻ Сначала
+        </button>
 
-<script>
-  const viewer = document.querySelector("#flags-model");
-  const playButton = document.querySelector("#play-animation");
-  const pauseButton = document.querySelector("#pause-animation");
+        <button class="control" id="next-btn" disabled>
+          Следующий клип
+        </button>
+      </div>
 
-  playButton.addEventListener("click", () => {
-    viewer.play();
-  });
+      <p class="status" id="animation-status">
+        Проверка анимаций...
+      </p>
 
-  pauseButton.addEventListener("click", () => {
-    viewer.pause();
-  });
+    </section>
 
-  // Индикатор загрузки модели
-  viewer.addEventListener("progress", (event) => {
-    const progressBar = viewer.querySelector(".progress-bar");
-    const updateBar = viewer.querySelector(".update-bar");
+    <!-- ПОСТОБРАБОТКА -->
+    <section class="panel">
 
-    if (!progressBar || !updateBar) return;
+      <p class="section-label">
+        ЧАСТЬ 2 · ПОСТОБРАБОТКА
+      </p>
 
-    updateBar.style.width =
-      `${event.detail.totalProgress * 100}%`;
+      <h2>Цифровые эффекты</h2>
 
-    if (event.detail.totalProgress === 1) {
-      progressBar.classList.add("hide");
-    } else {
-      progressBar.classList.remove("hide");
+      <p class="panel-description">
+        Сравните обычную 3D-модель с
+        пикселизацией и эффектом цифровых помех.
+        Эффекты можно применять одновременно.
+      </p>
+
+      <div class="controls">
+
+        <button class="control" id="pixel-btn">
+          Пикселизация: выкл.
+        </button>
+
+        <button class="control" id="glitch-btn">
+          Glitch: выкл.
+        </button>
+
+        <button class="control" id="reset-btn">
+          Сбросить эффекты
+        </button>
+
+      </div>
+
+      <p class="status" id="effects-status">
+        Эффекты выключены.
+      </p>
+
+    </section>
+
+    <!-- ОПИСАНИЕ -->
+    <section class="info-card">
+
+      <p class="section-label">
+        ИССЛЕДУЙТЕ МИР
+      </p>
+
+      <h2>Мир в каждом флаге</h2>
+
+      <p>
+        Каждый флаг — символ истории,
+        культуры и национальной идентичности.
+
+        Трёхмерная композиция позволяет
+        рассмотреть флаги с разных ракурсов,
+        наблюдать анимацию и исследовать
+        влияние постобработки на изображение.
+      </p>
+
+    </section>
+
+    <footer>
+      Лабораторная работа № 6 ·
+      Анимация и эффекты постобработки в model-viewer
+    </footer>
+
+  </main>
+
+  <script>
+    const viewer = document.querySelector("#flags-model");
+    const loading = document.querySelector("#loading");
+
+    const composer = document.querySelector("#composer");
+    const pixelEffect =
+      document.querySelector("#pixel-effect");
+    const glitchEffect =
+      document.querySelector("#glitch-effect");
+
+    const pixelBtn = document.querySelector("#pixel-btn");
+    const glitchBtn = document.querySelector("#glitch-btn");
+    const resetBtn = document.querySelector("#reset-btn");
+
+    const effectsStatus =
+      document.querySelector("#effects-status");
+
+    const animationStatus =
+      document.querySelector("#animation-status");
+
+    const nextBtn = document.querySelector("#next-btn");
+
+    // СОСТОЯНИЕ ЭФФЕКТОВ
+    let pixelEnabled = false;
+    let glitchEnabled = false;
+
+    function updateEffects() {
+
+      pixelEffect.setAttribute(
+        "blend-mode",
+        pixelEnabled ? "default" : "skip"
+      );
+
+      glitchEffect.setAttribute(
+        "blend-mode",
+        glitchEnabled ? "default" : "skip"
+      );
+
+      pixelBtn.classList.toggle(
+        "active", pixelEnabled
+      );
+
+      glitchBtn.classList.toggle(
+        "active", glitchEnabled
+      );
+
+      pixelBtn.textContent =
+        "Пикселизация: " +
+        (pixelEnabled ? "вкл." : "выкл.");
+
+      glitchBtn.textContent =
+        "Glitch: " +
+        (glitchEnabled ? "вкл." : "выкл.");
+
+      if (pixelEnabled && glitchEnabled) {
+        effectsStatus.textContent =
+          "Активны два эффекта: Pixelate и Glitch.";
+      } else if (pixelEnabled) {
+        effectsStatus.textContent =
+          "Активен эффект Pixelate.";
+      } else if (glitchEnabled) {
+        effectsStatus.textContent =
+          "Активен эффект Glitch.";
+      } else {
+        effectsStatus.textContent =
+          "Эффекты выключены.";
+      }
+
+      if (typeof composer.queueRender === "function") {
+        composer.queueRender();
+      }
     }
-  });
-</script>
 
+    pixelBtn.addEventListener("click", () => {
+      pixelEnabled = !pixelEnabled;
+      updateEffects();
+    });
+
+    glitchBtn.addEventListener("click", () => {
+      glitchEnabled = !glitchEnabled;
+      updateEffects();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      pixelEnabled = false;
+      glitchEnabled = false;
+      updateEffects();
+    });
+
+    // АНИМАЦИИ
+    let clips = [];
+    let currentClip = 0;
+    let clipTimer = null;
+    let isPaused = false;
+
+    function stopClipCycle() {
+      if (clipTimer !== null) {
+        clearInterval(clipTimer);
+        clipTimer = null;
+      }
+    }
+
+    function nextClip() {
+      if (clips.length < 2) return;
+
+      currentClip = (currentClip + 1) % clips.length;
+
+      viewer.animationName = clips[currentClip];
+      viewer.play();
+
+      animationStatus.textContent =
+        "Активная анимация: " + clips[currentClip];
+    }
+
+    function startClipCycle() {
+      stopClipCycle();
+
+      if (clips.length < 2 || isPaused) return;
+
+      clipTimer = setInterval(() => {
+        nextClip();
+      }, 5000);
+    }
+
+    // ПОСЛЕ ЗАГРУЗКИ МОДЕЛИ
+    viewer.addEventListener("load", () => {
+
+      loading.classList.add("hidden");
+
+      clips = viewer.availableAnimations || [];
+
+      if (clips.length === 0) {
+        animationStatus.textContent =
+          "Анимации в GLB не обнаружены.";
+        return;
+      }
+
+      currentClip = 0;
+
+      // Первый клип запускается автоматически
+      viewer.animationName = clips[0];
+      viewer.play();
+
+      animationStatus.textContent =
+        "Найдено клипов: " + clips.length +
+        ". Активный: " + clips[0];
+
+      nextBtn.disabled = clips.length < 2;
+
+      if (clips.length >= 2) {
+        startClipCycle();
+      }
+    });
+
+    viewer.addEventListener("error", error => {
+      loading.textContent =
+        "Ошибка загрузки 3D-модели.";
+      console.error(error);
+    });
+
+    // КНОПКИ АНИМАЦИИ
+    document.querySelector("#play-btn")
+      .addEventListener("click", () => {
+        if (clips.length === 0) return;
+
+        isPaused = false;
+        viewer.play();
+        startClipCycle();
+      });
+
+    document.querySelector("#pause-btn")
+      .addEventListener("click", () => {
+        isPaused = true;
+        viewer.pause();
+        stopClipCycle();
+      });
+
+    document.querySelector("#restart-btn")
+      .addEventListener("click", () => {
+        if (clips.length === 0) return;
+
+        isPaused = false;
+        viewer.currentTime = 0;
+        viewer.play();
+        startClipCycle();
+      });
+
+    nextBtn.addEventListener("click", () => {
+      nextClip();
+    });
+  </script>
 </body>
 </html>
