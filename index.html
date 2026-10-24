@@ -11,7 +11,7 @@
   <script type="importmap">
   {
     "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.min.js"
+      "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js"
     }
   }
   </script>
@@ -285,23 +285,22 @@
           field-of-view="30deg"
           animation-crossfade-duration="1000">
 
+          <!-- Эффекты создаются отключёнными -->
           <effect-composer id="composer" render-mode="quality">
+
             <pixelate-effect
               id="pixel-effect"
-              granularity="12"
+              granularity="18"
               blend-mode="skip">
             </pixelate-effect>
 
             <glitch-effect
               id="glitch-effect"
-              strength="0.6"
               mode="constant"
+              strength="0.8"
               blend-mode="skip">
             </glitch-effect>
 
-            <color-grade-effect
-              tonemapping="aces_filmic">
-            </color-grade-effect>
           </effect-composer>
 
           <button class="ar-button" slot="ar-button" type="button">
@@ -322,15 +321,22 @@
     <section class="panel">
       <p class="section-label">ЧАСТЬ 1 · АНИМАЦИЯ</p>
       <h2>Управление движением</h2>
+
       <p class="panel-description">
         Запускайте, останавливайте и переключайте
         анимационные клипы модели.
       </p>
 
       <div class="controls">
-        <button class="control" id="play-btn" type="button">▶ Запустить</button>
-        <button class="control" id="pause-btn" type="button">⏸ Остановить</button>
-        <button class="control" id="restart-btn" type="button">↻ Сначала</button>
+        <button class="control" id="play-btn" type="button">
+          ▶ Запустить
+        </button>
+        <button class="control" id="pause-btn" type="button">
+          ⏸ Остановить
+        </button>
+        <button class="control" id="restart-btn" type="button">
+          ↻ Сначала
+        </button>
         <button class="control" id="next-btn" type="button" disabled>
           Следующий клип
         </button>
@@ -344,18 +350,23 @@
     <section class="panel">
       <p class="section-label">ЧАСТЬ 2 · ПОСТОБРАБОТКА</p>
       <h2>Цифровые эффекты</h2>
+
       <p class="panel-description">
         Включайте пикселизацию и цифровые помехи
         по отдельности или одновременно.
       </p>
 
       <div class="controls">
-        <button class="control" id="pixel-btn" type="button" aria-pressed="false">
+        <button class="control" id="pixel-btn" type="button"
+                aria-pressed="false">
           Пикселизация: выкл.
         </button>
-        <button class="control" id="glitch-btn" type="button" aria-pressed="false">
+
+        <button class="control" id="glitch-btn" type="button"
+                aria-pressed="false">
           Glitch: выкл.
         </button>
+
         <button class="control" id="reset-btn" type="button">
           Сбросить эффекты
         </button>
@@ -369,6 +380,7 @@
     <section class="info-card">
       <p class="section-label">ОБЪЕКТ ИССЛЕДОВАНИЯ</p>
       <h2>Мир в каждом флаге</h2>
+
       <p>
         Флаги отражают историю, культуру и национальную
         идентичность стран. Трёхмерная композиция
@@ -385,7 +397,6 @@
   </main>
 
   <script>
-    // Инициализация страницы
     const viewer = document.getElementById("flags-model");
     const loading = document.getElementById("loading");
 
@@ -399,27 +410,37 @@
 
     const effectsStatus = document.getElementById("effects-status");
     const animationStatus = document.getElementById("animation-status");
+    const nextBtn = document.getElementById("next-btn");
 
     let pixelEnabled = false;
     let glitchEnabled = false;
 
-    // Управление эффектами
-    function updateEffects() {
-      pixelEffect.setAttribute(
-        "blend-mode",
-        pixelEnabled ? "default" : "skip"
-      );
+    // Включаем эффект удалением blend-mode="skip".
+    // Отключаем установкой blend-mode="skip".
+    function setEffectEnabled(element, enabled) {
+      if (enabled) {
+        element.removeAttribute("blend-mode");
+      } else {
+        element.setAttribute("blend-mode", "skip");
+      }
+    }
 
-      glitchEffect.setAttribute(
-        "blend-mode",
-        glitchEnabled ? "default" : "skip"
-      );
+    function updateEffects() {
+      setEffectEnabled(pixelEffect, pixelEnabled);
+      setEffectEnabled(glitchEffect, glitchEnabled);
 
       pixelBtn.classList.toggle("active", pixelEnabled);
       glitchBtn.classList.toggle("active", glitchEnabled);
 
-      pixelBtn.setAttribute("aria-pressed", String(pixelEnabled));
-      glitchBtn.setAttribute("aria-pressed", String(glitchEnabled));
+      pixelBtn.setAttribute(
+        "aria-pressed",
+        String(pixelEnabled)
+      );
+
+      glitchBtn.setAttribute(
+        "aria-pressed",
+        String(glitchEnabled)
+      );
 
       pixelBtn.textContent =
         "Пикселизация: " + (pixelEnabled ? "вкл." : "выкл.");
@@ -429,15 +450,16 @@
 
       if (pixelEnabled && glitchEnabled) {
         effectsStatus.textContent =
-          "Включены оба эффекта: Pixelate и Glitch.";
+          "Активны Pixelate и Glitch.";
       } else if (pixelEnabled) {
         effectsStatus.textContent =
-          "Включена пикселизация.";
+          "Активна пикселизация.";
       } else if (glitchEnabled) {
         effectsStatus.textContent =
-          "Включены цифровые помехи Glitch.";
+          "Активен Glitch.";
       } else {
-        effectsStatus.textContent = "Эффекты выключены.";
+        effectsStatus.textContent =
+          "Эффекты выключены.";
       }
 
       if (typeof composer.queueRender === "function") {
@@ -445,23 +467,23 @@
       }
     }
 
-    pixelBtn.addEventListener("click", function() {
+    pixelBtn.addEventListener("click", () => {
       pixelEnabled = !pixelEnabled;
       updateEffects();
     });
 
-    glitchBtn.addEventListener("click", function() {
+    glitchBtn.addEventListener("click", () => {
       glitchEnabled = !glitchEnabled;
       updateEffects();
     });
 
-    resetBtn.addEventListener("click", function() {
+    resetBtn.addEventListener("click", () => {
       pixelEnabled = false;
       glitchEnabled = false;
       updateEffects();
     });
 
-    // Управление анимацией
+    // Управление анимациями
     let clips = [];
     let currentClip = 0;
     let clipTimer = null;
@@ -493,7 +515,7 @@
       clipTimer = setInterval(nextClip, 5000);
     }
 
-    viewer.addEventListener("load", function() {
+    viewer.addEventListener("load", () => {
       loading.classList.add("hidden");
 
       clips = viewer.availableAnimations || [];
@@ -512,49 +534,51 @@
         "Найдено клипов: " + clips.length +
         ". Активный: " + clips[0];
 
-      document.getElementById("next-btn").disabled =
-        clips.length < 2;
-
+      nextBtn.disabled = clips.length < 2;
       startClipCycle();
     });
 
-    viewer.addEventListener("error", function(event) {
+    viewer.addEventListener("error", event => {
       loading.classList.remove("hidden");
       loading.textContent = "Ошибка загрузки 3D-модели.";
-      console.error("Ошибка модели:", event);
+      console.error("Ошибка model-viewer:", event);
     });
 
-    document.getElementById("play-btn").addEventListener("click", function() {
-      if (!clips.length) return;
-      paused = false;
-      viewer.play();
-      startClipCycle();
-    });
+    document.getElementById("play-btn")
+      .addEventListener("click", () => {
+        if (!clips.length) return;
 
-    document.getElementById("pause-btn").addEventListener("click", function() {
-      paused = true;
-      viewer.pause();
-      stopClipCycle();
-    });
+        paused = false;
+        viewer.play();
+        startClipCycle();
+      });
 
-    document.getElementById("restart-btn").addEventListener("click", function() {
-      if (!clips.length) return;
-      paused = false;
-      viewer.currentTime = 0;
-      viewer.play();
-      startClipCycle();
-    });
+    document.getElementById("pause-btn")
+      .addEventListener("click", () => {
+        paused = true;
+        viewer.pause();
+        stopClipCycle();
+      });
 
-    document.getElementById("next-btn").addEventListener("click", nextClip);
+    document.getElementById("restart-btn")
+      .addEventListener("click", () => {
+        if (!clips.length) return;
 
-    // Диагностика
+        paused = false;
+        viewer.currentTime = 0;
+        viewer.play();
+        startClipCycle();
+      });
+
+    nextBtn.addEventListener("click", nextClip);
+
     Promise.all([
       customElements.whenDefined("model-viewer"),
       customElements.whenDefined("effect-composer"),
       customElements.whenDefined("pixelate-effect"),
       customElements.whenDefined("glitch-effect")
-    ]).then(function() {
-      console.log("Все компоненты model-viewer-effects подключены.");
+    ]).then(() => {
+      console.log("Библиотеки постобработки зарегистрированы.");
     });
   </script>
 </body>
