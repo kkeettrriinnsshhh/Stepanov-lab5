@@ -2,772 +2,391 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Флаги мира — лабораторная работа №6</title>
 
-  <title>Флаги мира — Лабораторная работа №6</title>
-
-  <!-- Совместимая загрузка Three.js -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "./three-shim.js",
-      "three-real": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js"
-    }
+<script type="importmap">
+{
+  "imports": {
+    "three": "./three-shim.js",
+    "three-real": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js"
   }
-  </script>
+}
+</script>
 
-  <!-- 3D-просмотрщик -->
-  <script
-    type="module"
-    src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-module.min.js">
-  </script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer-module.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer-effects@1.5.0/dist/model-viewer-effects.min.js"></script>
 
-  <!-- Библиотека постобработки -->
-  <script
-    type="module"
-    src="https://cdn.jsdelivr.net/npm/@google/model-viewer-effects@1.5.0/dist/model-viewer-effects.min.js">
-  </script>
+<style>
+:root {
+  --bg: #FFF4E6;
+  --panel: #FFF9F1;
+  --ink: #54351F;
+  --accent: #B67A45;
+  --muted: #806C5C;
+}
 
-  <style>
-    :root {
-      --background: #FFF4E6;
-      --brown: #54351F;
-      --accent: #B67A45;
-      --paper: #FFF9F1;
-      --muted: #806C5C;
-      --border: #E5CBAE;
-    }
+* { box-sizing: border-box; }
 
-    * {
-      box-sizing: border-box;
-    }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Arial, sans-serif;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: var(--brown);
-      background: linear-gradient(
-        145deg,
-        #FFFDF8,
-        #FFF4E6 55%,
-        #F0DECA
-      );
-    }
+main {
+  width: min(94%, 1100px);
+  margin: auto;
+  padding: 48px 0 25px;
+}
 
-    .container {
-      width: min(94%, 1050px);
-      margin: 0 auto;
-    }
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
-    .header {
-      padding: 55px 15px 35px;
-      text-align: center;
-    }
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: var(--accent);
+}
 
-    .eyebrow,
-    .section-label {
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
+h1 {
+  font: normal clamp(40px, 7vw, 75px) Georgia, serif;
+  margin: 15px 0;
+}
 
-    h1 {
-      margin: 16px 0;
-      font-family: Georgia, serif;
-      font-size: clamp(48px, 7vw, 78px);
-      font-weight: normal;
-    }
+.subtitle {
+  color: var(--muted);
+  line-height: 1.6;
+}
 
-    .subtitle {
-      max-width: 650px;
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.7;
-    }
+.viewer {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px #0002;
+}
 
-    .viewer-card,
-    .panel {
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      background: var(--paper);
-      box-shadow: 0 12px 35px #54351F12;
-    }
+model-viewer {
+  display: block;
+  width: 100%;
+  height: 580px;
+  background: radial-gradient(
+    circle at center,
+    var(--panel),
+    var(--bg)
+  );
+  --poster-color: transparent;
+}
 
-    .viewer-card {
-      margin-bottom: 25px;
-    }
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--ink);
+  pointer-events: none;
+}
 
-    .viewer-top {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding: 20px 25px;
-      background: #F8EBDD;
-    }
+.ar-button {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 13px 23px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 20px #0003;
+}
 
-    .viewer-label {
-      color: #98714C;
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
+.ar-button:hover {
+  filter: brightness(1.1);
+}
 
-    .model-area {
-      position: relative;
-    }
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 22px;
+}
 
-    model-viewer {
-      display: block;
-      width: 100%;
-      height: 570px;
-      background: radial-gradient(
-        circle,
-        #FFFFFF,
-        #FFF9F1 60%,
-        #F4E9DB
-      );
-      --poster-color: #FFF9F1;
-    }
+.panel {
+  padding: 23px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+}
 
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      transform: translate(-50%, -50%);
-      color: var(--brown);
-      font-size: 14px;
-      text-align: center;
-      pointer-events: none;
-    }
+.panel h2 {
+  font: normal 25px Georgia, serif;
+  margin: 0 0 16px;
+}
 
-    .loading.hidden {
-      display: none;
-    }
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
-    .ar-button {
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 25px;
-      background: var(--brown);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button.control {
+  padding: 11px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
 
-    .viewer-bottom {
-      padding: 18px;
-      background: #F7EADB;
-      color: var(--muted);
-      font-size: 12px;
-      text-align: center;
-    }
+button.control:hover:not(:disabled) {
+  filter: brightness(.95);
+}
 
-    .panel {
-      margin-bottom: 25px;
-      padding: 36px 25px;
-      text-align: center;
-    }
+button.control.active {
+  background: var(--accent);
+  color: #FFFFFF;
+}
 
-    .panel h2 {
-      margin: 15px 0;
-      font-family: Georgia, serif;
-      font-size: clamp(28px, 4vw, 40px);
-      font-weight: normal;
-    }
+button.control:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
 
-    .panel-description {
-      max-width: 650px;
-      margin: 0 auto 25px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
+.note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
 
-    .controls {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+footer {
+  padding: 28px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
 
-    .control {
-      min-height: 45px;
-      padding: 12px 20px;
-      border: 1px solid var(--accent);
-      border-radius: 25px;
-      background: white;
-      color: var(--brown);
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .control:hover:not(:disabled) {
-      background: #F6E6D3;
-    }
-
-    .control.active {
-      border-color: var(--brown);
-      background: var(--brown);
-      color: white;
-    }
-
-    .control:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .status {
-      margin: 20px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .status.error {
-      color: #A12C24;
-    }
-
-    .info-card {
-      margin-bottom: 25px;
-      padding: 45px 35px;
-      border-radius: 26px;
-      background: #F6E9D9;
-      text-align: center;
-    }
-
-    .info-card h2 {
-      margin: 15px 0;
-      font-family: Georgia, serif;
-      font-size: 38px;
-      font-weight: normal;
-    }
-
-    .info-card p:last-child {
-      max-width: 700px;
-      margin: 0 auto;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    footer {
-      padding: 15px 15px 55px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align: center;
-    }
-
-    @media (max-width: 600px) {
-      .header {
-        padding: 40px 10px 28px;
-      }
-
-      model-viewer {
-        height: 420px;
-      }
-
-      .viewer-top {
-        padding: 15px;
-      }
-
-      .panel {
-        padding: 30px 15px;
-      }
-
-      .control {
-        padding: 11px 14px;
-        font-size: 12px;
-      }
-
-      .info-card {
-        padding: 30px 20px;
-      }
-    }
-  </style>
+@media (max-width: 700px) {
+  main { padding-top: 28px; }
+  model-viewer { height: 420px; }
+  .controls { grid-template-columns: 1fr; }
+  .panel { padding: 17px; }
+}
+</style>
 </head>
 
 <body>
-<main class="container">
+<main>
 
-  <header class="header">
-    <p class="eyebrow">Интерактивная 3D-коллекция</p>
-    <h1>Флаги мира</h1>
-    <p class="subtitle">
-      Исследуйте трёхмерную модель, её анимацию
-      и цифровые эффекты
-    </p>
-  </header>
+<header>
+  <p class="eyebrow">ИНТЕРАКТИВНАЯ 3D-ГАЛЕРЕЯ</p>
+  <h1>Флаги мира</h1>
+  <p class="subtitle">
+    Исследуйте трёхмерную модель, её анимацию и цифровые эффекты
+  </p>
+</header>
 
-  <!-- МОДЕЛЬ -->
-  <section class="viewer-card">
+<section class="viewer">
 
-    <div class="viewer-top">
-      <span class="viewer-label">3D-ЭКСПОНАТ / 01</span>
-      <span class="viewer-label">АНИМАЦИЯ И ПОСТОБРАБОТКА</span>
-    </div>
+  <model-viewer
+    id="model"
+    src="./4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
+    alt="3D-модель: Флаги мира"
+    camera-controls
+    touch-action="pan-y"
+    auto-rotate
+    auto-rotate-delay="0"
+    rotation-per-second="15deg"
+    interaction-prompt="none"
+    shadow-intensity="1.21"
+    shadow-softness="0.8"
+    exposure="0.76"
+    camera-orbit="-41.43deg 73.34deg 15m"
+    field-of-view="30deg"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    animation-crossfade-duration="1000">
 
-    <div class="model-area">
+    <effect-composer id="composer"></effect-composer>
 
-      <model-viewer
-        id="flags-model"
-        src="./4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
-        alt="Трёхмерная модель флагов мира"
-        camera-controls
-        touch-action="pan-y"
-        autoplay
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        shadow-intensity="1.21"
-        shadow-softness="0.41"
-        exposure="0.76"
-        camera-orbit="-41.43deg 73.34deg 15m"
-        field-of-view="30deg"
-        animation-crossfade-duration="1000">
+    <button
+      class="ar-button"
+      slot="ar-button"
+      type="button">
+      ◈ Посмотреть в AR
+    </button>
 
-        <!-- Эффекты создаются после загрузки модели -->
+  </model-viewer>
 
-        <button
-          class="ar-button"
-          slot="ar-button"
-          type="button">
-          Посмотреть в AR
-        </button>
+  <div id="loading" class="loading">
+    Загрузка 3D-модели...
+  </div>
 
-      </model-viewer>
+</section>
 
-      <div class="loading" id="loading">
-        Загрузка 3D-модели...
-      </div>
+<div class="controls">
 
-    </div>
-
-    <div class="viewer-bottom">
-      ↻ Вращайте модель мышью · Приближайте колёсиком
-    </div>
-
-  </section>
-
-  <!-- АНИМАЦИЯ -->
   <section class="panel">
+    <h2>Анимация</h2>
 
-    <p class="section-label">Часть 1 · Анимация</p>
-    <h2>Управление движением</h2>
-
-    <p class="panel-description">
-      Запускайте, останавливайте и переключайте
-      анимационные клипы модели.
-    </p>
-
-    <div class="controls">
-
-      <button class="control" id="play-btn" type="button">
-        ▶ Запустить
-      </button>
-
-      <button class="control" id="pause-btn" type="button">
-        ⏸ Остановить
-      </button>
-
-      <button class="control" id="restart-btn" type="button">
-        ↻ Сначала
-      </button>
-
-      <button
-        class="control"
-        id="next-btn"
-        type="button"
-        disabled>
-        Следующий клип
-      </button>
-
+    <div class="buttons">
+      <button class="control" id="play" disabled>▶ Запустить</button>
+      <button class="control" id="pause" disabled>⏸ Пауза</button>
+      <button class="control" id="restart" disabled>↻ Сначала</button>
+      <button class="control" id="next" disabled>Следующая анимация</button>
     </div>
 
-    <p class="status" id="animation-status">
-      Проверка анимаций...
+    <p class="note" id="animation-info">
+      Проверяем анимации...
     </p>
-
   </section>
 
-  <!-- ПОСТОБРАБОТКА -->
   <section class="panel">
+    <h2>Визуальные эффекты</h2>
 
-    <p class="section-label">Часть 2 · Постобработка</p>
-    <h2>Цифровые эффекты</h2>
-
-    <p class="panel-description">
-      Включайте пикселизацию и цифровые помехи
-      по отдельности или одновременно.
-    </p>
-
-    <div class="controls">
-
-      <button
-        class="control"
-        id="pixel-btn"
-        type="button"
-        disabled>
-        Пикселизация: выкл.
-      </button>
-
-      <button
-        class="control"
-        id="glitch-btn"
-        type="button"
-        disabled>
-        Glitch: выкл.
-      </button>
-
-      <button
-        class="control"
-        id="reset-btn"
-        type="button"
-        disabled>
-        Сбросить эффекты
-      </button>
-
+    <div class="buttons">
+      <button class="control" id="pixelate">Pixelate</button>
+      <button class="control" id="glitch">Glitch</button>
+      <button class="control" id="reset">Сбросить эффекты</button>
     </div>
 
-    <p class="status" id="effects-status">
-      Подключение библиотеки постобработки...
+    <p class="note">
+      Эффекты можно включать одновременно.
     </p>
-
   </section>
 
-  <!-- ИНФОРМАЦИЯ -->
-  <section class="info-card">
+</div>
 
-    <p class="section-label">Объект исследования</p>
-    <h2>Мир в каждом флаге</h2>
-
-    <p>
-      Флаги отражают историю, культуру и национальную
-      идентичность стран. Трёхмерная композиция
-      позволяет рассмотреть их с разных ракурсов,
-      изучить анимацию и сравнить результаты
-      применения различных эффектов постобработки.
-    </p>
-
-  </section>
-
-  <footer>
-    Лабораторная работа №6 ·
-    Анимация и постобработка в model-viewer
-  </footer>
+<footer>
+  Лабораторная работа №6 · Анимация, эффекты и дополненная реальность
+</footer>
 
 </main>
 
-<script>
-(function () {
-  "use strict";
+<script type="module">
+const model = document.getElementById("model");
+const loading = document.getElementById("loading");
+const composer = document.getElementById("composer");
+const info = document.getElementById("animation-info");
 
-  const viewer = document.getElementById("flags-model");
-  const loading = document.getElementById("loading");
+const play = document.getElementById("play");
+const pause = document.getElementById("pause");
+const restart = document.getElementById("restart");
+const next = document.getElementById("next");
 
-  const pixelBtn = document.getElementById("pixel-btn");
-  const glitchBtn = document.getElementById("glitch-btn");
-  const resetBtn = document.getElementById("reset-btn");
+const pixelate = document.getElementById("pixelate");
+const glitch = document.getElementById("glitch");
+const reset = document.getElementById("reset");
 
-  const effectsStatus = document.getElementById("effects-status");
-  const animationStatus = document.getElementById("animation-status");
+let clips = [];
+let index = 0;
+let pixelOn = false;
+let glitchOn = false;
 
-  let composer = null;
+function init() {
+  loading.style.display = "none";
+  clips = model.availableAnimations || [];
 
-  let pixelEnabled = false;
-  let glitchEnabled = false;
-  let effectsReady = false;
-
-  let clips = [];
-  let currentClip = 0;
-  let clipTimer = null;
-  let paused = false;
-
-  // --------------------------
-  // ПОСТОБРАБОТКА
-  // --------------------------
-
-  function reportError(message, error) {
-    effectsStatus.textContent = message;
-    effectsStatus.classList.add("error");
-    console.error(message, error);
+  if (!clips.length) {
+    info.textContent = "В этой модели нет встроенных анимаций.";
+    return;
   }
 
-  function createEffect(tag, attributes) {
-    const element = document.createElement(tag);
+  index = 0;
+  model.animationName = clips[0];
+  model.play();
 
-    Object.entries(attributes || {}).forEach(
-      ([name, value]) => {
-        element.setAttribute(name, String(value));
-      }
-    );
+  play.disabled = false;
+  pause.disabled = false;
+  restart.disabled = false;
+  next.disabled = clips.length < 2;
 
-    return element;
+  updateInfo();
+}
+
+function updateInfo() {
+  info.textContent =
+    `Анимация ${index + 1} из ${clips.length}: ${clips[index]}`;
+}
+
+model.addEventListener("load", init);
+
+model.addEventListener("error", e => {
+  loading.textContent = "Не удалось загрузить модель";
+  console.error(e);
+});
+
+if (model.loaded) init();
+
+play.onclick = () => {
+  if (clips.length) model.play();
+};
+
+pause.onclick = () => {
+  if (clips.length) model.pause();
+};
+
+restart.onclick = () => {
+  if (!clips.length) return;
+  model.currentTime = 0;
+  model.play();
+};
+
+next.onclick = () => {
+  if (clips.length < 2) return;
+
+  index = (index + 1) % clips.length;
+  model.animationName = clips[index];
+  model.play();
+  updateInfo();
+};
+
+function applyEffects() {
+  composer.replaceChildren();
+
+  if (pixelOn) {
+    const el = document.createElement("pixelate-effect");
+    el.setAttribute("granularity", "32");
+    composer.appendChild(el);
   }
 
-  function rebuildEffects() {
-    if (!effectsReady) return;
-
-    try {
-      if (composer) {
-        composer.remove();
-        composer = null;
-      }
-
-      if (pixelEnabled || glitchEnabled) {
-
-        composer = document.createElement("effect-composer");
-        composer.setAttribute("render-mode", "quality");
-
-        if (pixelEnabled) {
-          composer.appendChild(
-            createEffect("pixelate-effect", {
-              granularity: 32
-            })
-          );
-        }
-
-        if (glitchEnabled) {
-          composer.appendChild(
-            createEffect("glitch-effect", {
-              mode: "constant"
-            })
-          );
-        }
-
-        viewer.appendChild(composer);
-      }
-
-      pixelBtn.classList.toggle("active", pixelEnabled);
-      glitchBtn.classList.toggle("active", glitchEnabled);
-
-      pixelBtn.textContent =
-        "Пикселизация: " +
-        (pixelEnabled ? "вкл." : "выкл.");
-
-      glitchBtn.textContent =
-        "Glitch: " +
-        (glitchEnabled ? "вкл." : "выкл.");
-
-      pixelBtn.setAttribute(
-        "aria-pressed",
-        String(pixelEnabled)
-      );
-
-      glitchBtn.setAttribute(
-        "aria-pressed",
-        String(glitchEnabled)
-      );
-
-      if (pixelEnabled && glitchEnabled) {
-        effectsStatus.textContent =
-          "Активны два эффекта: Pixelate и Glitch.";
-      } else if (pixelEnabled) {
-        effectsStatus.textContent =
-          "Активна пикселизация.";
-      } else if (glitchEnabled) {
-        effectsStatus.textContent =
-          "Активен Glitch.";
-      } else {
-        effectsStatus.textContent =
-          "Исходное изображение без эффектов.";
-      }
-
-      effectsStatus.classList.remove("error");
-
-      if (
-        composer &&
-        typeof composer.queueRender === "function"
-      ) {
-        composer.queueRender();
-      }
-
-    } catch (error) {
-      reportError(
-        "Ошибка применения эффекта: " + error.message,
-        error
-      );
-    }
+  if (glitchOn) {
+    const el = document.createElement("glitch-effect");
+    el.setAttribute("mode", "constant");
+    composer.appendChild(el);
   }
 
-  pixelBtn.addEventListener("click", function () {
-    pixelEnabled = !pixelEnabled;
-    rebuildEffects();
-  });
+  pixelate.classList.toggle("active", pixelOn);
+  glitch.classList.toggle("active", glitchOn);
+}
 
-  glitchBtn.addEventListener("click", function () {
-    glitchEnabled = !glitchEnabled;
-    rebuildEffects();
-  });
+pixelate.onclick = () => {
+  pixelOn = !pixelOn;
+  applyEffects();
+};
 
-  resetBtn.addEventListener("click", function () {
-    pixelEnabled = false;
-    glitchEnabled = false;
-    rebuildEffects();
-  });
+glitch.onclick = () => {
+  glitchOn = !glitchOn;
+  applyEffects();
+};
 
-  // --------------------------
-  // АНИМАЦИЯ
-  // --------------------------
-
-  function stopCycle() {
-    if (clipTimer !== null) {
-      clearInterval(clipTimer);
-      clipTimer = null;
-    }
-  }
-
-  function nextClip() {
-    if (clips.length < 2) return;
-
-    currentClip = (currentClip + 1) % clips.length;
-
-    viewer.animationName = clips[currentClip];
-    viewer.play();
-
-    animationStatus.textContent =
-      "Активная анимация: " + clips[currentClip];
-  }
-
-  function startCycle() {
-    stopCycle();
-
-    if (!paused && clips.length > 1) {
-      clipTimer = setInterval(nextClip, 5000);
-    }
-  }
-
-  function setupAnimations() {
-    clips = viewer.availableAnimations || [];
-
-    if (!clips.length) {
-      animationStatus.textContent =
-        "В модели нет анимационных клипов.";
-      return;
-    }
-
-    currentClip = 0;
-
-    viewer.animationName = clips[0];
-    viewer.play();
-
-    animationStatus.textContent =
-      "Найдено клипов: " + clips.length +
-      ". Активный: " + clips[0];
-
-    document.getElementById("next-btn").disabled =
-      clips.length < 2;
-
-    startCycle();
-  }
-
-  document.getElementById("play-btn")
-    .addEventListener("click", function () {
-      if (!clips.length) return;
-
-      paused = false;
-      viewer.play();
-      startCycle();
-    });
-
-  document.getElementById("pause-btn")
-    .addEventListener("click", function () {
-      paused = true;
-      viewer.pause();
-      stopCycle();
-    });
-
-  document.getElementById("restart-btn")
-    .addEventListener("click", function () {
-      if (!clips.length) return;
-
-      paused = false;
-      viewer.currentTime = 0;
-      viewer.play();
-      startCycle();
-    });
-
-  document.getElementById("next-btn")
-    .addEventListener("click", nextClip);
-
-  // --------------------------
-  // ЗАГРУЗКА
-  // --------------------------
-
-  viewer.addEventListener("load", function () {
-    loading.classList.add("hidden");
-    setupAnimations();
-  });
-
-  viewer.addEventListener("error", function (event) {
-    loading.classList.remove("hidden");
-    loading.textContent =
-      "Ошибка загрузки 3D-модели.";
-
-    console.error("Ошибка модели:", event);
-  });
-
-  async function initializeEffects() {
-    try {
-      await Promise.all([
-        customElements.whenDefined("model-viewer"),
-        customElements.whenDefined("effect-composer"),
-        customElements.whenDefined("pixelate-effect"),
-        customElements.whenDefined("glitch-effect")
-      ]);
-
-      if (!viewer.loaded) {
-        await new Promise((resolve, reject) => {
-          viewer.addEventListener(
-            "load",
-            resolve,
-            { once: true }
-          );
-
-          viewer.addEventListener(
-            "error",
-            () => reject(
-              new Error("Модель не загрузилась")
-            ),
-            { once: true }
-          );
-        });
-      }
-
-      effectsReady = true;
-
-      pixelBtn.disabled = false;
-      glitchBtn.disabled = false;
-      resetBtn.disabled = false;
-
-      effectsStatus.textContent =
-        "Готово. Выберите эффект для сравнения.";
-
-      console.log(
-        "Модель и библиотека постобработки готовы."
-      );
-
-    } catch (error) {
-      reportError(
-        "Ошибка инициализации: " + error.message,
-        error
-      );
-    }
-  }
-
-  initializeEffects();
-
-})();
+reset.onclick = () => {
+  pixelOn = false;
+  glitchOn = false;
+  applyEffects();
+};
 </script>
 
 </body>
