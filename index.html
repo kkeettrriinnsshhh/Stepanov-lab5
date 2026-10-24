@@ -3,23 +3,17 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Флаги мира — лабораторная №6</title>
+  <title>Флаги мира — Лабораторная №6</title>
 
-  <meta name="description"
-        content="Анимация и постобработка 3D-модели флагов мира">
-
-  <!-- Библиотеки для model-viewer и эффектов -->
-  <script async
-    src="https://ga.jspm.io/npm:es-module-shims@1.7.1/dist/es-module-shims.js">
-  </script>
+  <!-- Совместимые библиотеки -->
+  <script async src="https://ga.jspm.io/npm:es-module-shims@2.6.2/dist/es-module-shims.js"></script>
 
   <script type="importmap">
   {
     "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+      "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.min.js"
     }
   }
   </script>
@@ -50,13 +44,12 @@
       min-height: 100vh;
       font-family: Arial, sans-serif;
       color: var(--brown);
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          #FFFDF7 0%,
-          #FFF4E6 65%,
-          #F0E0CC 100%
-        );
+      background: linear-gradient(
+        145deg,
+        #FFFDF8 0%,
+        #FFF4E6 55%,
+        #F0DECA 100%
+      );
     }
 
     .container {
@@ -65,11 +58,12 @@
     }
 
     .header {
-      padding: 55px 15px 35px;
       text-align: center;
+      padding: 55px 15px 35px;
     }
 
-    .eyebrow {
+    .eyebrow,
+    .section-label {
       color: var(--accent);
       font-size: 12px;
       font-weight: bold;
@@ -91,11 +85,10 @@
       line-height: 1.7;
     }
 
-    /* ОБЛАСТЬ 3D-МОДЕЛИ */
     .viewer-card {
       overflow: hidden;
       border: 1px solid #E5CBAE;
-      border-radius: 25px;
+      border-radius: 26px;
       background: var(--paper);
       box-shadow: 0 20px 55px #54351F20;
     }
@@ -106,7 +99,7 @@
       flex-wrap: wrap;
       gap: 12px;
       padding: 20px 25px;
-      border-bottom: 1px solid #EADAC6;
+      background: #F8EBDD;
     }
 
     .viewer-label {
@@ -169,22 +162,14 @@
       text-align: center;
     }
 
-    /* ПАНЕЛИ УПРАВЛЕНИЯ */
     .panel {
       margin-top: 25px;
       padding: 35px 25px;
       border: 1px solid #E5CBAE;
-      border-radius: 25px;
-      background: #FFF9F1;
-      box-shadow: 0 12px 30px #54351F12;
+      border-radius: 26px;
+      background: var(--paper);
       text-align: center;
-    }
-
-    .section-label {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
+      box-shadow: 0 12px 30px #54351F12;
     }
 
     .panel h2 {
@@ -209,7 +194,7 @@
       gap: 12px;
     }
 
-    button.control {
+    .control {
       min-height: 46px;
       padding: 12px 20px;
       border: 1px solid var(--accent);
@@ -219,20 +204,20 @@
       font-size: 14px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.2s;
+      transition: background 0.2s;
     }
 
-    button.control:hover {
+    .control:hover {
       background: #F6E6D3;
     }
 
-    button.control.active {
+    .control.active {
       background: var(--brown);
-      color: white;
       border-color: var(--brown);
+      color: white;
     }
 
-    button.control:disabled {
+    .control:disabled {
       opacity: 0.45;
       cursor: not-allowed;
     }
@@ -247,7 +232,7 @@
     .info-card {
       margin-top: 25px;
       padding: 45px 35px;
-      border-radius: 25px;
+      border-radius: 26px;
       background: #F6E9D9;
       text-align: center;
     }
@@ -268,9 +253,9 @@
 
     footer {
       padding: 35px 15px 55px;
+      text-align: center;
       color: var(--muted);
       font-size: 13px;
-      text-align: center;
     }
 
     @media (max-width: 600px) {
@@ -298,7 +283,7 @@
         padding: 28px 15px;
       }
 
-      button.control {
+      .control {
         padding: 12px 15px;
         font-size: 12px;
       }
@@ -313,17 +298,16 @@
 <body>
   <main class="container">
 
-    <!-- ЗАГОЛОВОК -->
     <header class="header">
       <p class="eyebrow">
-        ИНТЕРАКТИВНАЯ 3D-ПРЕЗЕНТАЦИЯ
+        ИНТЕРАКТИВНАЯ 3D-КОЛЛЕКЦИЯ
       </p>
 
       <h1>Флаги мира</h1>
 
       <p class="subtitle">
-        Путешествие по странам и культурам
-        в трёхмерном пространстве
+        Исследуйте трёхмерную модель,
+        её анимацию и цифровые эффекты
       </p>
     </header>
 
@@ -334,6 +318,7 @@
         <span class="viewer-label">
           3D-ЭКСПОНАТ / 01
         </span>
+
         <span class="viewer-label">
           АНИМАЦИЯ И ПОСТОБРАБОТКА
         </span>
@@ -346,11 +331,11 @@
 
           src="./4aa07e83b6784fd0ad8b52cbe9aa9017.glb"
 
-          poster="./poster.webp"
-
-          alt="Анимированная 3D-композиция флагов мира"
+          alt="3D-модель флагов мира"
 
           camera-controls
+          touch-action="pan-y"
+
           autoplay
 
           ar
@@ -363,27 +348,27 @@
           camera-orbit="-41.43deg 73.34deg 15m"
           field-of-view="30deg"
 
-          min-camera-orbit="auto auto 5m"
-          max-camera-orbit="auto auto 60m"
-
           animation-crossfade-duration="1000">
 
-          <!-- ЭФФЕКТЫ ПОСТОБРАБОТКИ -->
+          <!-- ПОСТОБРАБОТКА -->
           <effect-composer
             id="composer"
             render-mode="quality">
 
+            <!-- ЭФФЕКТ 1: ПИКСЕЛИЗАЦИЯ -->
             <pixelate-effect
               id="pixel-effect"
               granularity="8"
               blend-mode="skip">
             </pixelate-effect>
 
+            <!-- ЭФФЕКТ 2: GLITCH -->
             <glitch-effect
               id="glitch-effect"
               blend-mode="skip">
             </glitch-effect>
 
+            <!-- ВОССТАНОВЛЕНИЕ ТОНАЛЬНОСТИ -->
             <color-grade-effect
               tonemapping="aces_filmic">
             </color-grade-effect>
@@ -392,7 +377,8 @@
 
           <button
             class="ar-button"
-            slot="ar-button">
+            slot="ar-button"
+            type="button">
             Посмотреть в AR
           </button>
 
@@ -405,7 +391,8 @@
       </div>
 
       <div class="viewer-bottom">
-        ✦ Вращайте модель мышью и приближайте колёсиком ✦
+        ↻ Вращайте модель мышью ·
+        Приближайте колёсиком
       </div>
 
     </section>
@@ -417,39 +404,47 @@
         ЧАСТЬ 1 · АНИМАЦИЯ
       </p>
 
-      <h2>Движение флагов</h2>
+      <h2>Управление движением</h2>
 
       <p class="panel-description">
-        Управляйте воспроизведением анимации.
-        При наличии нескольких клипов они
-        автоматически сменяют друг друга.
+        Запускайте, останавливайте и
+        переключайте анимационные клипы.
+        При наличии двух и более клипов
+        они сменяются автоматически.
       </p>
 
       <div class="controls">
-        <button class="control" id="play-btn">
+
+        <button class="control"
+                id="play-btn" type="button">
           ▶ Запустить
         </button>
 
-        <button class="control" id="pause-btn">
+        <button class="control"
+                id="pause-btn" type="button">
           ⏸ Остановить
         </button>
 
-        <button class="control" id="restart-btn">
+        <button class="control"
+                id="restart-btn" type="button">
           ↻ Сначала
         </button>
 
-        <button class="control" id="next-btn" disabled>
+        <button class="control"
+                id="next-btn" type="button"
+                disabled>
           Следующий клип
         </button>
+
       </div>
 
       <p class="status" id="animation-status">
-        Проверка анимаций...
+        Проверяем анимации...
       </p>
 
     </section>
 
-    <!-- ПОСТОБРАБОТКА -->
+    <!-- ЭФФЕКТЫ -->
     <section class="panel">
 
       <p class="section-label">
@@ -459,22 +454,27 @@
       <h2>Цифровые эффекты</h2>
 
       <p class="panel-description">
-        Сравните обычную 3D-модель с
-        пикселизацией и эффектом цифровых помех.
-        Эффекты можно применять одновременно.
+        Сравните обычное изображение с
+        пикселизацией и цифровыми помехами.
+        Можно включать два эффекта одновременно.
       </p>
 
       <div class="controls">
 
-        <button class="control" id="pixel-btn">
+        <button class="control"
+                id="pixel-btn" type="button"
+                aria-pressed="false">
           Пикселизация: выкл.
         </button>
 
-        <button class="control" id="glitch-btn">
+        <button class="control"
+                id="glitch-btn" type="button"
+                aria-pressed="false">
           Glitch: выкл.
         </button>
 
-        <button class="control" id="reset-btn">
+        <button class="control"
+                id="reset-btn" type="button">
           Сбросить эффекты
         </button>
 
@@ -490,43 +490,52 @@
     <section class="info-card">
 
       <p class="section-label">
-        ИССЛЕДУЙТЕ МИР
+        ОБЪЕКТ ИССЛЕДОВАНИЯ
       </p>
 
       <h2>Мир в каждом флаге</h2>
 
       <p>
-        Каждый флаг — символ истории,
-        культуры и национальной идентичности.
+        Флаги отражают историю, культуру
+        и национальную идентичность стран.
 
         Трёхмерная композиция позволяет
-        рассмотреть флаги с разных ракурсов,
-        наблюдать анимацию и исследовать
-        влияние постобработки на изображение.
+        рассмотреть их с разных ракурсов,
+        изучить анимацию и сравнить
+        результаты применения различных
+        эффектов постобработки.
       </p>
 
     </section>
 
     <footer>
       Лабораторная работа № 6 ·
-      Анимация и эффекты постобработки в model-viewer
+      Анимация и постобработка в model-viewer
     </footer>
 
   </main>
 
   <script>
-    const viewer = document.querySelector("#flags-model");
-    const loading = document.querySelector("#loading");
+    const viewer =
+      document.querySelector("#flags-model");
 
-    const composer = document.querySelector("#composer");
+    const loading =
+      document.querySelector("#loading");
+
+    const composer =
+      document.querySelector("#composer");
+
     const pixelEffect =
       document.querySelector("#pixel-effect");
+
     const glitchEffect =
       document.querySelector("#glitch-effect");
 
-    const pixelBtn = document.querySelector("#pixel-btn");
-    const glitchBtn = document.querySelector("#glitch-btn");
-    const resetBtn = document.querySelector("#reset-btn");
+    const pixelBtn =
+      document.querySelector("#pixel-btn");
+
+    const glitchBtn =
+      document.querySelector("#glitch-btn");
 
     const effectsStatus =
       document.querySelector("#effects-status");
@@ -534,7 +543,8 @@
     const animationStatus =
       document.querySelector("#animation-status");
 
-    const nextBtn = document.querySelector("#next-btn");
+    const nextBtn =
+      document.querySelector("#next-btn");
 
     // СОСТОЯНИЕ ЭФФЕКТОВ
     let pixelEnabled = false;
@@ -542,15 +552,11 @@
 
     function updateEffects() {
 
-      pixelEffect.setAttribute(
-        "blend-mode",
-        pixelEnabled ? "default" : "skip"
-      );
+      pixelEffect.blendMode =
+        pixelEnabled ? "default" : "skip";
 
-      glitchEffect.setAttribute(
-        "blend-mode",
-        glitchEnabled ? "default" : "skip"
-      );
+      glitchEffect.blendMode =
+        glitchEnabled ? "default" : "skip";
 
       pixelBtn.classList.toggle(
         "active", pixelEnabled
@@ -558,6 +564,16 @@
 
       glitchBtn.classList.toggle(
         "active", glitchEnabled
+      );
+
+      pixelBtn.setAttribute(
+        "aria-pressed",
+        String(pixelEnabled)
+      );
+
+      glitchBtn.setAttribute(
+        "aria-pressed",
+        String(glitchEnabled)
       );
 
       pixelBtn.textContent =
@@ -570,14 +586,17 @@
 
       if (pixelEnabled && glitchEnabled) {
         effectsStatus.textContent =
-          "Активны два эффекта: Pixelate и Glitch.";
-      } else if (pixelEnabled) {
+          "Включены Pixelate и Glitch.";
+      }
+      else if (pixelEnabled) {
         effectsStatus.textContent =
-          "Активен эффект Pixelate.";
-      } else if (glitchEnabled) {
+          "Включён Pixelate.";
+      }
+      else if (glitchEnabled) {
         effectsStatus.textContent =
-          "Активен эффект Glitch.";
-      } else {
+          "Включён Glitch.";
+      }
+      else {
         effectsStatus.textContent =
           "Эффекты выключены.";
       }
@@ -597,11 +616,12 @@
       updateEffects();
     });
 
-    resetBtn.addEventListener("click", () => {
-      pixelEnabled = false;
-      glitchEnabled = false;
-      updateEffects();
-    });
+    document.querySelector("#reset-btn")
+      .addEventListener("click", () => {
+        pixelEnabled = false;
+        glitchEnabled = false;
+        updateEffects();
+      });
 
     // АНИМАЦИИ
     let clips = [];
@@ -619,26 +639,32 @@
     function nextClip() {
       if (clips.length < 2) return;
 
-      currentClip = (currentClip + 1) % clips.length;
+      currentClip =
+        (currentClip + 1) % clips.length;
 
-      viewer.animationName = clips[currentClip];
+      viewer.animationName =
+        clips[currentClip];
+
       viewer.play();
 
       animationStatus.textContent =
-        "Активная анимация: " + clips[currentClip];
+        "Активная анимация: " +
+        clips[currentClip];
     }
 
     function startClipCycle() {
       stopClipCycle();
 
-      if (clips.length < 2 || isPaused) return;
+      if (clips.length < 2 || isPaused) {
+        return;
+      }
 
       clipTimer = setInterval(() => {
         nextClip();
       }, 5000);
     }
 
-    // ПОСЛЕ ЗАГРУЗКИ МОДЕЛИ
+    // ЗАГРУЗКА МОДЕЛИ
     viewer.addEventListener("load", () => {
 
       loading.classList.add("hidden");
@@ -647,36 +673,43 @@
 
       if (clips.length === 0) {
         animationStatus.textContent =
-          "Анимации в GLB не обнаружены.";
+          "В GLB нет анимационных клипов.";
         return;
       }
 
       currentClip = 0;
 
-      // Первый клип запускается автоматически
       viewer.animationName = clips[0];
       viewer.play();
 
       animationStatus.textContent =
-        "Найдено клипов: " + clips.length +
+        "Найдено клипов: " +
+        clips.length +
         ". Активный: " + clips[0];
 
       nextBtn.disabled = clips.length < 2;
 
-      if (clips.length >= 2) {
+      if (clips.length > 1) {
         startClipCycle();
       }
     });
 
-    viewer.addEventListener("error", error => {
+    // ОШИБКА ЗАГРУЗКИ
+    viewer.addEventListener("error", (event) => {
+      loading.classList.remove("hidden");
       loading.textContent =
         "Ошибка загрузки 3D-модели.";
-      console.error(error);
+
+      console.error(
+        "Ошибка model-viewer:",
+        event
+      );
     });
 
-    // КНОПКИ АНИМАЦИИ
+    // УПРАВЛЕНИЕ АНИМАЦИЕЙ
     document.querySelector("#play-btn")
       .addEventListener("click", () => {
+
         if (clips.length === 0) return;
 
         isPaused = false;
@@ -686,6 +719,7 @@
 
     document.querySelector("#pause-btn")
       .addEventListener("click", () => {
+
         isPaused = true;
         viewer.pause();
         stopClipCycle();
@@ -693,6 +727,7 @@
 
     document.querySelector("#restart-btn")
       .addEventListener("click", () => {
+
         if (clips.length === 0) return;
 
         isPaused = false;
@@ -704,6 +739,25 @@
     nextBtn.addEventListener("click", () => {
       nextClip();
     });
+
+    // ПРОВЕРКА ИНИЦИАЛИЗАЦИИ
+    window.addEventListener("load", async () => {
+      try {
+        await customElements.whenDefined("model-viewer");
+        await customElements.whenDefined("effect-composer");
+
+        console.log(
+          "model-viewer и postprocessing подключены"
+        );
+      }
+      catch (error) {
+        console.error(
+          "Ошибка подключения библиотек:",
+          error
+        );
+      }
+    });
+
   </script>
 </body>
 </html>
